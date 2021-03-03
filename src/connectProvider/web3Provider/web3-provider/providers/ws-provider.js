@@ -23,22 +23,8 @@ class WSProvider {
     this.lastMessage = new Date().getTime();
     const keepAlive = () => {
       if (
-        this.oWSProvider.connection.readyState ===
-        this.oWSProvider.connection.OPEN
-      )
-        this.wsProvider.connection.send(
-          '{"jsonrpc":"2.0","method":"net_version","params":[],"id":0}'
-        );
-      if (
-        this.wsProvider.connection.readyState ===
-        this.wsProvider.connection.OPEN
-      )
-        this.oWSProvider.connection.send(
-          '{"jsonrpc":"2.0","method":"net_version","params":[],"id":1}'
-        );
-      if (
         !Object.is(this.wsProvider, store.state.web3.currentProvider) &&
-        this.lastMessage + 10 * 60 * 1000 < new Date().getTime() //wait extra 10 minutes
+        this.lastMessage + 5 * 60 * 1000 < new Date().getTime() //wait extra 10 minutes
       ) {
         this.wsProvider.disconnect();
         this.oWSProvider.disconnect();
@@ -86,7 +72,7 @@ class WSProvider {
       });
     };
     const handler = {
-      apply: function(target, thisArg, argumentsList) {
+      apply: function (target, thisArg, argumentsList) {
         if (argumentsList.length === 1) {
           if (
             argumentsList[0] === 'eth_requestAccounts' ||
@@ -106,29 +92,32 @@ class WSProvider {
           }
         }
 
-          if(typeof argumentsList[0] === 'string' && typeof argumentsList[1] !== 'function'){
-            return new Promise((resolve, reject) => {
-              const callback = (err, response) => {
-                if (err) reject(err);
-                else resolve(response.result);
-              };
-              let params = [];
-              if (argumentsList.length === 2) {
-                params = Array.isArray(argumentsList[1])
-                  ? argumentsList[1]
-                  : argumentsList[1] !== undefined
-                    ? [argumentsList[1]]
-                    : []
-              }
-              const payload = {
-                jsonrpc: "2.0",
-                id: 1,
-                method: argumentsList[0],
-                params: params
-              };
-              target(payload, callback);
-            });
-          }
+        if (
+          typeof argumentsList[0] === 'string' &&
+          typeof argumentsList[1] !== 'function'
+        ) {
+          return new Promise((resolve, reject) => {
+            const callback = (err, response) => {
+              if (err) reject(err);
+              else resolve(response.result);
+            };
+            let params = [];
+            if (argumentsList.length === 2) {
+              params = Array.isArray(argumentsList[1])
+                ? argumentsList[1]
+                : argumentsList[1] !== undefined
+                ? [argumentsList[1]]
+                : [];
+            }
+            const payload = {
+              jsonrpc: '2.0',
+              id: 1,
+              method: argumentsList[0],
+              params: params
+            };
+            target(payload, callback);
+          });
+        }
 
         return target(argumentsList[0], argumentsList[1]);
       }
