@@ -19,9 +19,6 @@
     "prepublishOnly": "npm install && npm run update:lists && npm run build",
     "ci": "npm install && npm run update:lists && npm run build"
   },
-  "gitHooks": {
-    "pre-commit": "npm run lint"
-  },
   "dependencies": {
     "axios": "^0.21.1",
     "bignumber.js": "^9.0.0",
@@ -56,7 +53,6 @@
     "web3-core-requestmanager": "1.2.4",
     "web3-utils": "1.2.4",
     "webrtc-adapter": "^6.4.3",
-    "wrtc": "^0.4.6",
     "ws": "^7.2.1"
   },
   "devDependencies": {

@@ -4,7 +4,7 @@ import debugLogger from 'debug';
 import { isBrowser } from 'browser-or-node';
 import uuid from 'uuid/v4';
 import WebSocket from '../websocketWrapper';
-import wrtc from 'wrtc';
+import getBrowserRTC from 'get-browser-rtc';
 import MewConnectCommon from '../MewConnectCommon';
 import MewConnectCrypto from '../MewConnectCrypto';
 import WebRtcCommunication from '../WebRtcCommunication';
@@ -335,7 +335,7 @@ export default class MewConnectInitiatorV2 extends MewConnectCommon {
           config: {
             iceServers: this.stunServers
           },
-          wrtc: wrtc
+          wrtc: getBrowserRTC(),
         }
       };
 
@@ -407,7 +407,7 @@ export default class MewConnectInitiatorV2 extends MewConnectCommon {
         config: {
           iceServers: webRtcServers
         },
-        wrtc: wrtc
+        wrtc: getBrowserRTC(),
       };
 
       //
@@ -600,7 +600,7 @@ export default class MewConnectInitiatorV2 extends MewConnectCommon {
               return newObject;
             })
           },
-          wrtc: wrtc
+          wrtc: getBrowserRTC(),
         }
       };
       debug('turn info arrived and begin turn'); // todo remove dev item
